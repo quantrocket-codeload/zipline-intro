@@ -1,4 +1,4 @@
-# Copyright 2020 QuantRocket LLC - All Rights Reserved
+# Copyright 2022 QuantRocket LLC - All Rights Reserved
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@ from zipline.pipeline import Pipeline
 from zipline.pipeline.factors import AverageDollarVolume, Returns
 from zipline.finance.execution import MarketOrder
 
+MOMENTUM_WINDOW = 252
+
 def initialize(context):
     """
-    Called once at the start of a backtest, and once per day at
-    the start of live trading.
+    Called once at the start of a backtest, and once per day in
+    live trading.
     """
     # Attach the pipeline to the algo
     algo.attach_pipeline(make_pipeline(), 'pipeline')
@@ -37,11 +39,11 @@ def initialize(context):
 def make_pipeline():
     """
     Create a pipeline that filters by dollar volume and
-    calculates 1-year return.
+    calculates return.
     """
     pipeline = Pipeline(
         columns={
-            "1y_returns": Returns(window_length=252),
+            "returns": Returns(window_length=MOMENTUM_WINDOW),
         },
         screen=AverageDollarVolume(window_length=30) > 10e6
     )
@@ -53,8 +55,8 @@ def before_trading_start(context, data):
     """
     factors = algo.pipeline_output('pipeline')
 
-    # Get the top and bottom 3 stocks by 1-year return
-    returns = factors["1y_returns"].sort_values(ascending=False)
+    # Get the top 3 stocks by return
+    returns = factors["returns"].sort_values(ascending=False)
     context.winners = returns.index[:3]
 
 def rebalance(context, data):
