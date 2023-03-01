@@ -19,7 +19,7 @@ from zipline.finance.execution import MarketOrder
 
 MOMENTUM_WINDOW = 252
 
-def initialize(context):
+def initialize(context: algo.Context):
     """
     Called once at the start of a backtest, and once per day in
     live trading.
@@ -49,7 +49,7 @@ def make_pipeline():
     )
     return pipeline
 
-def before_trading_start(context, data):
+def before_trading_start(context: algo.Context, data: algo.BarData):
     """
     Called every day before market open.
     """
@@ -59,7 +59,7 @@ def before_trading_start(context, data):
     returns = factors["returns"].sort_values(ascending=False)
     context.winners = returns.index[:3]
 
-def rebalance(context, data):
+def rebalance(context: algo.Context, data: algo.BarData):
     """
     Execute orders according to our schedule_function() timing.
     """
