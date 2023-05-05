@@ -27,7 +27,7 @@ def initialize(context: algo.Context):
     # Attach the pipeline to the algo
     algo.attach_pipeline(make_pipeline(), 'pipeline')
 
-    algo.set_benchmark(algo.sid('FIBBG000BDTBL9'))
+    algo.set_benchmark(algo.symbol('SPY'))
 
     # Rebalance every day, 30 minutes before market close.
     algo.schedule_function(
