@@ -87,5 +87,6 @@ def rebalance(context: algo.Context, data: algo.BarData):
         if intraday_returns[asset] > 0:
             continue
 
-        # otherwise, buy a fixed $100K position per asset
-        algo.order_target_value(asset, 100e3, style=MarketOrder())
+        # otherwise, allocate 1/6th of capital per asset
+        algo.order_target_percent(asset, 1/6, style=MarketOrder())
+        
